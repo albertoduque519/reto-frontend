@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: monitoreo-vue
+  namespace: default
+  labels:
+    app: monitoreo-vue
+spec:
+  replicas: 1 # number of pods
+  template:
+    metadata:
+      labels:
+        app: monitoreo-vue
+    spec:
+      containers:
+        - name: monitoreo-vue
+          image: us.gcr.io/skillful-figure-271013/monitoreo-vue
+          imagePullPolicy: Always
+          env:
+            - name: VUE_APP_I18N_LOCALE
+              value: "en"
+            - name: VUE_APP_I18N_FALLBACK_LOCALE
+              value: "en"
+            - name: VUE_APP_URLAPI_AUTHENTICATION
+              value: "http://monitoreo-api:3000"
+          ports:
+            - containerPort: 80
+              protocol: TCP
