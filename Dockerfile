@@ -1,17 +1,19 @@
-# base image
-FROM node:12.2.0-alpine
-
-# set working directory
+FROM node:latest as build-stage
 WORKDIR /app
-
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
-
-# install and cache app dependencies
-COPY package.json /app/package.json
+COPY package*.json ./
 RUN npm install
-RUN npm install @vue/cli@3.7.0 -g
-EXPOSE 8080
+COPY ./ .
+RUN npm run build
 
-# start app
-CMD ["npm", "run", "serve"]
+FROM nginx as production-stage
+RUN mkdir /app
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+# Copiar los archivos finales de la aplicación en la carpeta del servidor
+COPY --from=build-stage /app/dist /var/www/html
+# Hacer que todos los archivos pertenezcan al usuario nginx
+RUN chown -R nginx:nginx /var/www/html
+RUN chmod 777 -R /var/www/html/
+# Abrir el puerto 80 del contenedor
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
