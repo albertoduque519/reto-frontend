@@ -1,102 +1,6 @@
 <template>
   <v-container id="dashboard" fluid tag="section">
     <v-row>
-      <v-col class="d-flex" cols="12" sm="6">
-        <v-select
-          v-model="cliente"
-          :items="item"
-          attach
-          chips
-          label="Clientes"
-          multiple
-          v-on:change="reloadStats"
-        />
-      </v-col>
-      <v-col cols="12" sm="3">
-        <v-menu
-          v-model="menu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="startDateFormatted"
-              label="Fecha Inicial"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-on="on"
-            />
-          </template>
-          <v-date-picker
-            v-model="startDate"
-            no-title
-            scrollable
-            locale="es-co"
-            color="light-blue darken-3"
-            @input="menu = false"
-          />
-        </v-menu>
-      </v-col>
-      <v-col cols="12" sm="3">
-        <v-menu
-          v-model="menu2"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="endDateFormatted"
-              label="Fecha Final"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-on="on"
-            />
-          </template>
-          <v-date-picker
-            v-model="endDate"
-            no-title
-            scrollable
-            locale="es-co"
-            color="light-blue darken-3"
-            @input="menu2 = false"
-          />
-        </v-menu>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" sm="6" lg="4">
-        <base-material-stats-card
-          color="primary"
-          icon="mdi-domain"
-          title="Capacidad Total"
-          :value="capacidadTotal + ' GB'"
-        />
-      </v-col>
-
-      <v-col cols="12" sm="6" lg="4">
-        <base-material-stats-card
-          color="success"
-          icon="mdi-widgets"
-          title="Consumo Total"
-          :value="consumoTotal + ' GB'"
-        />
-      </v-col>
-
-      <v-col cols="12" sm="6" lg="4">
-        <base-material-stats-card
-          color="orange"
-          icon="mdi-grid-large"
-          title="Disponible"
-          :value="disponible + ' GB'"
-        />
-      </v-col>
-
       <v-col cols="12" lg="12">
         <md-card class="md-primary" style="background-color: WHITE;">
           <md-card-area md-inset>
@@ -105,57 +9,154 @@
             </md-card-header>
             <hr role="separator" aria-orientation="horizontal" class="mt-2 v-divider theme--light" />
           </md-card-area>
+
+          <md-card-content>
+            <h3 class="md-subheading">Today's availability</h3>
+            <p class="d-inline-flex font-weight-light ml-2 mt-1">
+              <i
+                aria-hidden="true"
+                class="v-icon notranslate mdi mdi-arrow-up theme--light green--text"
+                style="font-size: 16px;"
+              />
+              <span class="green--text">55%</span> increase in today's sales
+            </p>
+          </md-card-content>
+
           <md-card-actions>
-            <v-row justify="center">
-              <v-dialog v-model="dialog" persistent max-width="290">
-                <template v-slot:activator="{ on }">
-                  <v-btn color="primary" dark v-on="on">Detalle</v-btn>
-                </template>
-                <v-card>
-                  <v-card-title class="headline">Detalles del almacenamiento</v-card-title>
-                  <v-card-text>
-                    <ul>
-                      <li
-                        v-for="tipo in tipos"
-                        v-bind:key="tipo"
-                      >{{ tipo.tipo }} : {{ tipo.tamano }} GB</li>
-                    </ul>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer />
-                    <v-btn color="light-blue darken-3" text @click="dialog = false">Entendido</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-row>
+            <md-button class="md-raised" style="background-color: #4095af;color: WHITE;">Detalle</md-button>
           </md-card-actions>
         </md-card>
+      </v-col>
+
+      <v-col cols="12" sm="6" lg="3">
+        <base-material-stats-card
+          color="info"
+          icon="mdi-twitter"
+          title="Followers"
+          value="+245"
+          sub-icon="mdi-clock"
+          sub-text="Just Updated"
+        />
+      </v-col>
+
+      <v-col cols="12" sm="6" lg="3">
+        <base-material-stats-card
+          color="primary"
+          icon="mdi-poll"
+          title="Website Visits"
+          value="75.521"
+          sub-icon="mdi-tag"
+          sub-text="Tracked from Google Analytics"
+        />
+      </v-col>
+
+      <v-col cols="12" sm="6" lg="3">
+        <base-material-stats-card
+          color="success"
+          icon="mdi-store"
+          title="Revenue"
+          value="$ 34,245"
+          sub-icon="mdi-calendar"
+          sub-text="Last 24 Hours"
+        />
+      </v-col>
+
+      <v-col cols="12" sm="6" lg="3">
+        <base-material-stats-card
+          color="orange"
+          icon="mdi-sofa"
+          title="Bookings"
+          value="184"
+          sub-icon="mdi-alert"
+          sub-icon-color="red"
+          sub-text="Get More Space..."
+        />
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <base-material-card color="warning" class="px-5 py-3">
+          <template v-slot:heading>
+            <div class="display-2 font-weight-light">Employees Stats</div>
+
+            <div class="subtitle-1 font-weight-light">New employees on 15th September, 2016</div>
+          </template>
+          <v-card-text>
+            <v-data-table :headers="headers" :items="items" />
+          </v-card-text>
+        </base-material-card>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <base-material-card class="px-5 py-3">
+          <template v-slot:heading>
+            <v-tabs v-model="tabs" background-color="transparent" slider-color="white">
+              <span class="subheading font-weight-light mx-3" style="align-self: center">Tasks:</span>
+              <v-tab class="mr-3">
+                <v-icon class="mr-2">mdi-bug</v-icon>Bugs
+              </v-tab>
+              <v-tab class="mr-3">
+                <v-icon class="mr-2">mdi-code-tags</v-icon>Website
+              </v-tab>
+              <v-tab>
+                <v-icon class="mr-2">mdi-cloud</v-icon>Server
+              </v-tab>
+            </v-tabs>
+          </template>
+
+          <v-tabs-items v-model="tabs" class="transparent">
+            <v-tab-item v-for="n in 3" :key="n">
+              <v-card-text>
+                <template v-for="(task, i) in tasks[tabs]">
+                  <v-row :key="i" align="center">
+                    <v-col cols="1">
+                      <v-list-item-action>
+                        <v-checkbox v-model="task.value" color="secondary" />
+                      </v-list-item-action>
+                    </v-col>
+
+                    <v-col cols="9">
+                      <div class="font-weight-light" v-text="task.text" />
+                    </v-col>
+
+                    <v-col cols="2" class="text-right">
+                      <v-icon class="mx-1">mdi-pencil</v-icon>
+                      <v-icon color="error" class="mx-1">mdi-close</v-icon>
+                    </v-col>
+                  </v-row>
+                </template>
+              </v-card-text>
+            </v-tab-item>
+          </v-tabs-items>
+
+          <v-row justify="center">
+            <v-dialog v-model="dialog" persistent max-width="290">
+              <template v-slot:activator="{ on }">
+                <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
+              </template>
+              <v-card>
+                <v-card-title class="headline">Use Google's location service?</v-card-title>
+                <v-card-text>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="green darken-1" text @click="dialog = false">Disagree</v-btn>
+                  <v-btn color="green darken-1" text @click="dialog = false">Agree</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+        </base-material-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { clientService } from "@/_services";
 export default {
   name: "DashboardDashboard",
 
   data() {
     return {
       dialog: false,
-      startDate: new Date().toISOString().substr(0, 10),
-      endDate: new Date().toISOString().substr(0, 10),
-      menu: false,
-      modal: false,
-      menu2: false,
-      capacidadTotal: 8000,
-      consumoTotal: 0,
-      disponible: 0,
-      clientes: ["todos"],
-      cliente: [],
-      dataClientes: [],
-      item: ["Todos"],
-      tipos: [],
       dailySalesChart: {
         data: {
           labels: ["M", "T", "W", "T", "F", "S", "S"],
@@ -372,9 +373,6 @@ export default {
             alpha: 45
           }
         },
-        title: {
-          text: "Monitoreo"
-        },
         plotOptions: {
           pie: {
             innerSize: 100,
@@ -394,84 +392,21 @@ export default {
         },
         series: [
           {
-            name: "Uso de Disco",
-            data: []
+            name: "Platform Score",
+            data: [
+              ["Spotify", 3],
+              ["Deezer", 1]
+            ]
           }
         ]
       }
     };
   },
 
-  computed: {
-    startDateFormatted() {
-      return this.formatDate(this.startDate);
-    },
-    endDateFormatted() {
-      return this.formatDate(this.endDate);
-    }
-  },
-
-  async mounted() {
-    this.getClients();
-    this.getDiskSpaceStatsByClient(null);
-  },
-
   methods: {
     complete(index) {
       this.list[index] = !this.list[index];
-    },
-    formatDate(date) {
-      if (!date) return null;
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
-    },
-    async getClients() {
-      let { data } = await clientService.getClients();
-      this.dataClientes = data;
-      this.clientes = data.map(item => item.id);
-      this.item = data.map(item => item.cliente);
-    },
-    async getDiskSpaceStatsByClient(idClientes = {}) {
-      let { data } = await clientService.getDiskSpaceStatsByClient(idClientes);
-      let sumConsumoTotal = 0;
-      this.tipos = data.map(item => {
-        let tamano = parseInt(item.tamano) / 1024 / 1024 / 1024;
-        tamano = parseFloat(tamano.toFixed(2));
-        sumConsumoTotal += tamano;
-        return {
-          tipo: item.tipo,
-          tamano
-        };
-      });
-      this.consumoTotal = sumConsumoTotal;
-      console.log("consumoTotal", sumConsumoTotal);
-      this.disponible = this.capacidadTotal - this.consumoTotal;
-      this.tipos.push({ tipo: "disponible", tamano: this.disponible });
-      let result = [];
-      //result.push(["disponible", this.disponible]);
-      for (let i in this.tipos)
-        result.push([this.tipos[i]["tipo"], this.tipos[i]["tamano"]]);
-      console.log(result);
-      this.chartOptions.series[0].data = result;
-    },
-    reloadStats() {
-      let idClientes = this.dataClientes
-        .filter(tipo => {
-          return this.cliente.includes(tipo.cliente);
-        })
-        .map(item => item.id);
-      if (idClientes) this.capacidadTotal = 800;
-      this.getDiskSpaceStatsByClient(idClientes);
     }
   }
 };
 </script>
-
-<style lang="sass">
-.v-card
-  margin-top: 0px
-  margin-bottom: 0px
-.v-application .headline
-  font-size: 18px !important
-  padding-bottom: 0
-</style>

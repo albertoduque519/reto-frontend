@@ -19,40 +19,44 @@
 </template>
 
 <script>
-  export default {
-    //
-    name: 'Apps',
-    data () {
-      return {
-        username: '',
-        password: '',
-        submitted: false,
-      }
-    },
-    computed: {
-      loggingIn () {
-        return this.$store.state.authentication.status.loggingIn
-      },
-    },
-    methods: {
-      async handleSubmit () {
-        this.submitted = true
-        const { username, password } = this
-        const { dispatch } = this.$store
-        if (username && password) {
-          await dispatch('authentication/logins', { username, password }).then(response => {
-            if (typeof response.data.token !== 'undefined') {
-              this.$router.push({ name: 'Dashboard' })
+export default {
+  //
+  name: "Apps",
+  data() {
+    return {
+      username: "",
+      password: "",
+      submitted: false
+    };
+  },
+  computed: {
+    loggingIn() {
+      return this.$store.state.authentication.status.loggingIn;
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      this.submitted = true;
+      const { username, password } = this;
+      const { dispatch } = this.$store;
+      if (username && password) {
+        await dispatch("authentication/logins", { username, password }).then(
+          response => {
+            if (typeof response.data.token !== "undefined") {
+              this.$router.push({ name: "Dashboard" });
             }
-          })
-        }
-      },
-    },
-
+          }
+        );
+      }
+    }
   }
+};
 </script>
 
 <style lang="sass">
-  .row-base
-    justify-content: center
+.row-base
+  justify-content: center
+.v-application .success
+  background-color: #4095af !important
+  border-color: #4095af !important
 </style>
