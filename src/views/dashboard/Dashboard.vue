@@ -413,7 +413,7 @@ export default {
 
   async mounted() {
     this.getClients();
-    this.getDiskSpaceStatsByClient(null);
+    //this.getDiskSpaceStatsByClient(null);
   },
 
   methods: {
@@ -436,7 +436,9 @@ export default {
       let sumConsumoTotal = 0;
       this.tipos = data.map(item => {
         let tamano = parseInt(item.tamano) / 1024 / 1024 / 1024;
+
         tamano = parseFloat(tamano.toFixed(2));
+        console.log("ss", tamano);
         sumConsumoTotal += tamano;
         return {
           tipo: item.tipo,
@@ -446,6 +448,7 @@ export default {
       this.consumoTotal = sumConsumoTotal;
       console.log("consumoTotal", sumConsumoTotal);
       this.disponible = this.capacidadTotal - this.consumoTotal;
+      this.disponible = parseFloat(this.disponible.toFixed(2));
       this.tipos.push({ tipo: "disponible", tamano: this.disponible });
       let result = [];
       //result.push(["disponible", this.disponible]);
