@@ -80,8 +80,8 @@ export default {
       },
       {
         title: "rtables",
-        icon: "mdi-clipboard-outline"
-        // to: "/tables/regular-tables"
+        icon: "mdi-clipboard-outline",
+        to: "/pages/history"
       }
     ]
   }),

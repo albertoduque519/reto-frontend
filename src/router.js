@@ -20,9 +20,9 @@ export default new Router({
         },
         // Pages
         {
-          name: 'User Profiles',
-          path: 'pages/user',
-          component: () => import('@/views/dashboard/pages/UserProfile'),
+          name: 'Historico',
+          path: 'pages/history',
+          component: () => import('@/views/dashboard/pages/History'),
         },
         {
           name: 'Notifications',
