@@ -9,6 +9,7 @@
           chips
           label="Clientes"
           multiple
+          disabled
           @change="reloadStats"
         />
       </v-col>
@@ -104,6 +105,9 @@ export default {
       capacidadTotal: 8000,
       consumoTotal: 0,
       disponible: 0,
+      cliente: [],
+      clientes: [],
+      dataClientes: [],
       tipos: [],
       chartOptions: {
         chart: {
@@ -152,10 +156,7 @@ export default {
   },
 
   computed: {
-    ...mapState(["clientes", "dataClientes"]),
-    ...mapState({
-      cliente: "empresa"
-    }),
+    ...mapState(["empresa", "empresas", "dataEmpresas"]),
     startDateFormatted() {
       return this.formatDate(this.startDate);
     },
@@ -165,8 +166,10 @@ export default {
   },
 
   async mounted() {
-    console.log("cliente", this.cliente);
-    if (!this.clientes) this.getClients();
+    this.clientes = this.empresas;
+    this.dataClientes = this.dataEmpresas;
+    this.cliente = this.empresa;
+    if (Object.keys(this.clientes).length == 0) this.getClients();
     this.changeDate();
     //this.getDiskSpaceStatsByClient(null);
   },
@@ -192,7 +195,6 @@ export default {
         let tamano = parseInt(item.tamano) / 1024 / 1024 / 1024;
 
         tamano = parseFloat(tamano.toFixed(2));
-        console.log("ss", tamano);
         sumConsumoTotal += tamano;
         return {
           tipo: item.tipo,
@@ -200,7 +202,6 @@ export default {
         };
       });
       this.consumoTotal = sumConsumoTotal;
-      console.log("consumoTotal", sumConsumoTotal);
       this.disponible = this.capacidadTotal - this.consumoTotal;
       this.disponible = parseFloat(this.disponible.toFixed(2));
       this.tipos.push({ tipo: "disponible", tamano: this.disponible });
@@ -208,7 +209,6 @@ export default {
       //result.push(["disponible", this.disponible]);
       for (let i in this.tipos)
         result.push([this.tipos[i]["tipo"], this.tipos[i]["tamano"]]);
-      console.log(result);
       this.chartOptions.series[0].data = result;
     },
     async getDiskSpaceStatsByDate(
@@ -275,9 +275,6 @@ export default {
           return this.cliente.includes(tipo.cliente);
         })
         .map(item => item.id);
-      console.log("Star", this.startDate);
-      console.log("ed", this.endDate);
-      console.log("--------", idClientes);
       this.getDiskSpaceStatsByDate(idClientes, this.startDate, this.endDate);
     }
   }
