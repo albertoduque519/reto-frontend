@@ -34,6 +34,11 @@ export default {
       return this.$store.state.authentication.status.loggingIn;
     }
   },
+  mounted() {
+    this.$store.state.empresa = [];
+    this.$store.state.empresas = [];
+    this.$store.state.dataEmpresas = [];
+  },
   methods: {
     async handleSubmit() {
       this.submitted = true;

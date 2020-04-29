@@ -8,11 +8,27 @@ import { users } from './users.module'
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
-    modules: {
-        alert,
-        authentication,
-        users,
+  state: {
+    empresa: [],
+    empresas: [],
+    dataEmpresas: []
+  },
+  modules: {
+    alert,
+    authentication,
+    users,
+  },
+  mutations: {
+    setEmpresa(state, empresa) {
+      state.empresa = empresa
     },
+    loadClientes(state, clientes) {
+      state.empresas = clientes
+    },
+    loadDataClientes(state, clientes) {
+      state.dataEmpresas = clientes
+    },
+  },
 })
 
 Vue.prototype.$store = store
