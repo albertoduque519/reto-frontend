@@ -138,13 +138,11 @@ export default {
   computed: mapState(["empresa", "empresas", "dataEmpresas"]),
 
   created: function() {
-    console.log("created");
     this.clientes = this.empresas;
     this.dataClientes = this.dataEmpresas;
     this.cliente = this.empresa;
   },
   async mounted() {
-    console.log("mount", this.cliente);
     if (Object.keys(this.clientes).length == 0) this.getClients();
     if (this.cliente) this.reloadStats();
   },
