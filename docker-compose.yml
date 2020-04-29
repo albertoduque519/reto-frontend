@@ -1,15 +1,15 @@
 version: "3.7"
 
 services:
-  my-app:
-    container_name: vue-app
+  frontend:
+    container_name: vue-monitor
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - ".:/app"
       - "/app/node_modules"
     ports:
       - "8080:8080"
     env_file:
-      - .env
+      - .env.dev

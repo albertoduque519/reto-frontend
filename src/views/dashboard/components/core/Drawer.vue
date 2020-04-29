@@ -88,6 +88,9 @@ export default {
 
   computed: {
     ...mapState(["barColor", "barImage"]),
+    ...mapState({
+      cliente: "empresa"
+    }),
     drawer: {
       get() {
         return this.$store.state.drawer;
