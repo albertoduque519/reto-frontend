@@ -47,7 +47,7 @@ export default {
       if (username && password) {
         await dispatch("authentication/logins", { username, password }).then(
           response => {
-            if (typeof response.data.token !== "undefined") {
+            if (typeof response.token !== "undefined") {
               this.$router.push({ name: "Dashboard" });
             }
           }

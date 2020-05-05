@@ -100,7 +100,6 @@ export default {
       startDate: new Date("2020-04-01").toISOString().substr(0, 10),
       endDate: new Date().toISOString().substr(0, 10),
       menu: false,
-      modal: false,
       menu2: false,
       capacidadTotal: 8000,
       consumoTotal: 0,
@@ -171,7 +170,6 @@ export default {
     this.cliente = this.empresa;
     if (Object.keys(this.clientes).length == 0) this.getClients();
     this.changeDate();
-    //this.getDiskSpaceStatsByClient(null);
   },
 
   methods: {
@@ -193,8 +191,6 @@ export default {
       let sumConsumoTotal = 0;
       this.tipos = data.map(item => {
         let tamano = parseInt(item.tamano) / 1024 / 1024 / 1024;
-
-        tamano = parseFloat(tamano.toFixed(2));
         sumConsumoTotal += tamano;
         return {
           tipo: item.tipo,
@@ -203,10 +199,9 @@ export default {
       });
       this.consumoTotal = sumConsumoTotal;
       this.disponible = this.capacidadTotal - this.consumoTotal;
-      this.disponible = parseFloat(this.disponible.toFixed(2));
+      this.disponible = Math.round(this.disponible);
       this.tipos.push({ tipo: "disponible", tamano: this.disponible });
       let result = [];
-      //result.push(["disponible", this.disponible]);
       for (let i in this.tipos)
         result.push([this.tipos[i]["tipo"], this.tipos[i]["tamano"]]);
       this.chartOptions.series[0].data = result;
@@ -227,32 +222,13 @@ export default {
       response = this.setData(data, response, "log");
       response = this.setData(data, response, "archivos");
       this.chartOptions.series = response;
-      /* this.chartOptions.series = [
-        {
-          name: "Tokyo",
-          data: [
-            [Date.UTC(2010, 1, 1), 20],
-            [Date.UTC(2010, 1, 2), 70],
-            [Date.UTC(2010, 1, 3), 50]
-          ]
-        },
-        {
-          name: "Tokyo44",
-          data: [
-            [Date.UTC(2010, 1, 1), 20],
-            [Date.UTC(2010, 1, 2), 70],
-            [Date.UTC(2010, 1, 3), 50]
-          ]
-        }
-      ];*/
     },
 
     setData(data, response, item) {
       let backup = data
         .filter(items => items.tipo == item)
         .map(function(obj) {
-          let tamano = parseInt(obj.tamano) / 1024 / 1024 / 1024;
-          tamano = parseFloat(tamano.toFixed(2));
+          let tamano = Math.round(parseInt(obj.tamano) / 1024 / 1024 / 1024);
           let date = new Date(obj.fecha);
           let dt = date.getDate() + 1;
           return [Date.UTC(date.getFullYear(), date.getMonth(), dt), tamano];
