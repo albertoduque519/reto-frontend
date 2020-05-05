@@ -5,11 +5,16 @@ import conn from './config'
 export const clientService = {
   getClients,
   getDiskSpaceStatsByClient,
-  getDiskSpaceStatsByDate
+  getDiskSpaceStatsByDate,
+  getUsers
 }
 
 async function getClients() {
   return conn.get(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/clients`, authHeader())
+}
+
+async function getUsers() {
+  return conn.get(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/users`, authHeader())
 }
 
 async function getDiskSpaceStatsByClient(idClientes) {

@@ -5,7 +5,9 @@ import conn from './config'
 export const userService = {
   login,
   logout,
-  getAll,
+  getUser,
+  updateUser,
+  createUser
 }
 
 async function login(username, password) {
@@ -19,7 +21,7 @@ async function login(username, password) {
       if (user.data.token) {
         localStorage.setItem('user', JSON.stringify(user.data))
       }
-      return user
+      return user.data
     })
 }
 
@@ -27,18 +29,25 @@ function logout() {
   localStorage.removeItem('user')
 }
 
-function getAll() {
-  return conn.get(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/user/data`, authHeader()).then(handleResponse)
+function getUser() {
+  return conn.get(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/verificacion`, authHeader()).then(user => {
+    return user
+  })
 }
 
-function handleResponse(response) {
-  if (!response.ok) {
-    if (response.status === 401) {
-      logout()
-      location.reload(true)
-    }
-    // eslint-disable-next-line prefer-promise-reject-errors
-    return Promise.reject()
-  }
-  return response.data
+async function updateUser(userInfo) {
+  let params = { 'userInfo': userInfo }
+  return conn.put(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/user/${userInfo.id}`, params, authHeader())
+    .then(user => {
+      return user
+    })
 }
+
+async function createUser(userInfo) {
+  let params = { 'userInfo': userInfo }
+  return conn.post(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/user`, params, authHeader())
+    .then(user => {
+      return user
+    })
+}
+

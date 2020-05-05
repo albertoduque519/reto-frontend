@@ -74,11 +74,6 @@ export default {
         to: "/"
       },
       {
-        icon: "mdi-account",
-        title: "user"
-        //sto: "/pages/user"
-      },
-      {
         title: "rtables",
         icon: "mdi-clipboard-outline",
         to: "/pages/history"
@@ -93,11 +88,9 @@ export default {
     }),
     drawer: {
       get() {
-        return this.$store.state.drawer;
+        return true;
       },
-      set(val) {
-        this.$store.commit("SET_DRAWER", val);
-      }
+      set(val) {}
     },
     computedItems() {
       return this.items.map(this.mapItem);
@@ -109,7 +102,15 @@ export default {
       };
     }
   },
-
+  mounted() {
+    if (this.$store.state.authentication.user.userInfo.empresa == "solati") {
+      this.items.push({
+        icon: "mdi-account",
+        title: "user",
+        to: "/pages/user-profile"
+      });
+    }
+  },
   methods: {
     mapItem(item) {
       return {

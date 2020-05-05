@@ -2,13 +2,14 @@
   <v-container id="dashboard" fluid tag="section">
     <v-row>
       <v-col class="d-flex" cols="12" sm="6">
-        <v-select
+        <v-autocomplete
           v-model="cliente"
           :items="clientes"
           attach
           chips
           label="Clientes"
           multiple
+          :clearable="Object.keys(clientes).length > 2 "
           @change="reloadStats"
         />
       </v-col>
@@ -86,17 +87,13 @@ export default {
   data() {
     return {
       dialog: false,
-      menu: false,
-      modal: false,
-      menu2: false,
-      capacidadTotal: 8000,
+      capacidadTotal: 0,
       consumoTotal: 0,
       disponible: 0,
       cliente: [],
       clientes: [],
       dataClientes: [],
       tipos: [],
-      tabs: 0,
       chartOptions: {
         chart: {
           type: "pie",
@@ -137,21 +134,16 @@ export default {
 
   computed: mapState(["empresa", "empresas", "dataEmpresas"]),
 
-  created: function() {
+  async mounted() {
     this.clientes = this.empresas;
     this.dataClientes = this.dataEmpresas;
     this.cliente = this.empresa;
-  },
-  async mounted() {
-    if (Object.keys(this.clientes).length == 0) this.getClients();
+    if (Object.keys(this.clientes).length == 0) await this.getClients();
     if (this.cliente) this.reloadStats();
   },
 
   methods: {
     ...mapMutations(["setEmpresa", "loadClientes", "loadDataClientes"]),
-    complete(index) {
-      this.list[index] = !this.list[index];
-    },
     async getClients() {
       try {
         let { data } = await clientService.getClients();
@@ -160,7 +152,6 @@ export default {
         if (Object.keys(this.clientes).length < 3) {
           this.setEmpresa(this.clientes[0]);
           this.cliente = this.empresa;
-          this.reloadStats();
         } else {
           this.setEmpresa(this.cliente);
           this.cliente = this.empresa;
@@ -175,18 +166,15 @@ export default {
       let { data } = await clientService.getDiskSpaceStatsByClient(idClientes);
       let sumConsumoTotal = 0;
       this.tipos = data.map(item => {
-        let tamano = parseInt(item.tamano) / 1024 / 1024 / 1024;
-
-        tamano = parseFloat(tamano.toFixed(2));
+        let tamano = Math.round(parseInt(item.tamano) / 1024 / 1024 / 1024);
         sumConsumoTotal += tamano;
         return {
           tipo: item.tipo,
           tamano
         };
       });
-      this.consumoTotal = sumConsumoTotal;
-      this.disponible = this.capacidadTotal - this.consumoTotal;
-      this.disponible = parseFloat(this.disponible.toFixed(2));
+      this.consumoTotal = Math.round(sumConsumoTotal);
+      this.disponible = Math.round(this.capacidadTotal - this.consumoTotal);
       this.tipos.push({ tipo: "disponible", tamano: this.disponible });
       let result = [];
       //result.push(["disponible", this.disponible]);
@@ -195,6 +183,7 @@ export default {
       this.chartOptions.series[0].data = result;
     },
     cleardata() {
+      this.capacidadTotal = 0;
       this.disponible = this.capacidadTotal;
       this.consumoTotal = 0;
       let result = [];
@@ -212,7 +201,20 @@ export default {
           return this.cliente.includes(tipo.cliente);
         })
         .map(item => item.id);
+      this.getCapacidadTotal();
       this.getDiskSpaceStatsByClient(idClientes);
+    },
+    getCapacidadTotal() {
+      this.capacidadTotal = this.dataClientes
+        .filter(tipo => {
+          return this.cliente.includes(tipo.cliente);
+        })
+        .reduce(function(accumulator, cliente) {
+          let tamano = Math.round(
+            parseInt(cliente.capacidadTotal) / 1024 / 1024 / 1024
+          );
+          return accumulator + tamano;
+        }, 0);
     }
   }
 };
