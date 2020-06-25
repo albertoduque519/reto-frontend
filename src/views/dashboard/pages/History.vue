@@ -191,9 +191,10 @@ export default {
       let sumConsumoTotal = 0;
       this.tipos = data.map(item => {
         let tamano = parseInt(item.tamano) / 1024 / 1024 / 1024;
+        let tipo = item.tipo.charAt(0).toUpperCase() + item.tipo.substring(1);
         sumConsumoTotal += tamano;
         return {
-          tipo: item.tipo,
+          tipo,
           tamano
         };
       });
@@ -233,7 +234,8 @@ export default {
           let dt = date.getDate() + 1;
           return [Date.UTC(date.getFullYear(), date.getMonth(), dt), tamano];
         });
-      if (backup) response.push({ name: item, data: backup });
+      let tipo = item.charAt(0).toUpperCase() + item.substring(1);
+      if (backup) response.push({ name: tipo, data: backup });
 
       return response;
     },

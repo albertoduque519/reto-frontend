@@ -2,7 +2,7 @@
   div(id="user-profile" class="container" tag="section")
     .row.row-base
       .col-md-4.col-md-offset-2
-        <base-material-card>
+        <base-material-card color="primary">
           <template v-slot:heading>
             div(class="display-2 font-weight-light") Login
           </template>
@@ -26,13 +26,13 @@ export default {
     return {
       username: "",
       password: "",
-      submitted: false
+      submitted: false,
     };
   },
   computed: {
     loggingIn() {
       return this.$store.state.authentication.status.loggingIn;
-    }
+    },
   },
   mounted() {
     this.$store.state.empresa = [];
@@ -46,15 +46,15 @@ export default {
       const { dispatch } = this.$store;
       if (username && password) {
         await dispatch("authentication/logins", { username, password }).then(
-          response => {
+          (response) => {
             if (typeof response.token !== "undefined") {
               this.$router.push({ name: "Dashboard" });
             }
           }
         );
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

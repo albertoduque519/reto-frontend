@@ -10,29 +10,25 @@
 </template>
 
 <script>
-  export default {
-    name: 'DashboardIndex',
-    components: {
-      DashboardCoreAppBar: () => import('./components/core/AppBar'),
-      DashboardCoreDrawer: () => import('./components/core/Drawer'),
-      DashboardCoreSettings: () => import('./components/core/Settings'),
-      DashboardCoreView: () => import('./components/core/View'),
+export default {
+  name: "DashboardIndex",
+  components: {
+    DashboardCoreAppBar: () => import("./components/core/AppBar"),
+    DashboardCoreDrawer: () => import("./components/core/Drawer"),
+    DashboardCoreSettings: () => import("./components/core/Settings"),
+    DashboardCoreView: () => import("./components/core/View"),
+  },
+  props: {
+    routes: {
+      type: String,
+      default: "",
     },
-    props: {
-      routes: {
-        type: String,
-        default: '',
-      },
-    },
+  },
 
-    data: () => ({
-      expandOnHover: false,
-    }),
-
-    computed: {
-      isActive: function () {
-        return this.routes !== this.$route.path
-      },
+  computed: {
+    isActive: function() {
+      return this.routes !== this.$route.path;
     },
-  }
+  },
+};
 </script>
