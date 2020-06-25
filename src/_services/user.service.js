@@ -7,7 +7,8 @@ export const userService = {
   logout,
   getUser,
   updateUser,
-  createUser
+  createUser,
+  getUsers
 }
 
 async function login(username, password) {
@@ -37,7 +38,7 @@ function getUser() {
 
 async function updateUser(userInfo) {
   let params = { 'userInfo': userInfo }
-  return conn.put(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/user/${userInfo.id}`, params, authHeader())
+  return conn.put(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/users/${userInfo.id}`, params, authHeader())
     .then(user => {
       return user
     })
@@ -45,9 +46,12 @@ async function updateUser(userInfo) {
 
 async function createUser(userInfo) {
   let params = { 'userInfo': userInfo }
-  return conn.post(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/user`, params, authHeader())
+  return conn.post(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/users`, params, authHeader())
     .then(user => {
       return user
     })
 }
 
+async function getUsers() {
+  return conn.get(`${process.env.VUE_APP_URLAPI_AUTHENTICATION}/users`, authHeader())
+}

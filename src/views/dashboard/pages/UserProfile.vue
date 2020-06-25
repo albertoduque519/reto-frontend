@@ -18,11 +18,15 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="6">
                     <v-text-field v-model="editedItem.usuario" label="Usuario"></v-text-field>
                   </v-col>
-                  <v-col cols="12" v-if="editedIndex === -1">
-                    <v-text-field v-model="editedItem.contrasena" label="Contraseña"></v-text-field>
+                  <v-col cols="6" v-if="editedIndex === -1">
+                    <v-text-field
+                      v-model="editedItem.contrasena"
+                      type="password"
+                      label="Contraseña"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12">
                     <v-text-field v-model="editedItem.empresa" label="Empresa"></v-text-field>
@@ -53,7 +57,6 @@
 </template>
 
 <script>
-import { clientService } from "@/_services";
 import { userService } from "@/_services";
 export default {
   data: () => ({
@@ -142,7 +145,7 @@ export default {
     },
     async getUsers() {
       try {
-        let { data } = await clientService.getUsers();
+        let { data } = await userService.getUsers();
         this.users = data;
       } catch (error) {
         console.log("Error", error);

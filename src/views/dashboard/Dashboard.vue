@@ -9,7 +9,7 @@
           chips
           label="Clientes"
           multiple
-          :clearable="Object.keys(clientes).length > 2 "
+          :clearable="Object.keys(clientes).length > 2"
           @change="reloadStats"
         />
       </v-col>
@@ -18,7 +18,7 @@
       <v-col cols="12" sm="6" lg="4">
         <base-material-stats-card
           color="primary"
-          icon="mdi-domain"
+          icon="fas fa-server"
           title="Capacidad Total"
           :value="capacidadTotal + ' GB'"
         />
@@ -46,7 +46,7 @@
         <md-card class="md-primary" style="background-color: WHITE;">
           <md-card-area md-inset>
             <md-card-header style="background-color: WHITE;">
-              <highcharts :options="chartOptions" />
+              <highcharts :options="chartOptions" :key="renderFitPage" />
             </md-card-header>
             <hr role="separator" aria-orientation="horizontal" class="mt-2 v-divider theme--light" />
           </md-card-area>
@@ -60,7 +60,10 @@
                   <v-card-title class="headline">Detalles del almacenamiento</v-card-title>
                   <v-card-text>
                     <ul>
-                      <li v-for="tipo in tipos" :key="tipo">{{ tipo.tipo }} : {{ tipo.tamano }} GB</li>
+                      <li v-for="tipo in tipos" :key="tipo">
+                        <v-icon size="16" class="ml-2 mr-1">{{ tipo.icon }}</v-icon>
+                        {{ tipo.tipo }} : {{ tipo.tamano }} GB
+                      </li>
                     </ul>
                   </v-card-text>
                   <v-card-actions>
@@ -71,6 +74,29 @@
               </v-dialog>
             </v-row>
           </md-card-actions>
+        </md-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="12">
+        <md-card class="md-primary" style="background-color: WHITE;">
+          <v-row>
+            <v-col v-for="types in displayTypes" :key="types" cols="6" sm="6" lg="6">
+              <v-row>
+                <v-col cols="2" sm="2" lg="2">
+                  <v-icon class="footer-icon" size="46" :class="types.class">{{ types.icon }}</v-icon>
+                </v-col>
+                <v-col cols="9" sm="9" lg="9">
+                  <div class="ml-auto">
+                    <h4 class="display-1 font-weight-light text--primary">{{ types.tipo }}</h4>
+                    <p class="body-3 grey--text">
+                      <small>{{ types.descripcion }}</small>
+                    </p>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
         </md-card>
       </v-col>
     </v-row>
@@ -87,6 +113,7 @@ export default {
   data() {
     return {
       dialog: false,
+      renderFitPage: 0,
       capacidadTotal: 0,
       consumoTotal: 0,
       disponible: 0,
@@ -94,9 +121,50 @@ export default {
       clientes: [],
       dataClientes: [],
       tipos: [],
+      displayTypes: [
+        {
+          tipo: "Bases de datos",
+          descripcion:
+            "Todos las instancias de bases de datos disponibles para tu empresa: Base de datos en PDN, Base de datos en Contingencia, Base de Datos en Pruebas.",
+          icon: "fa-database",
+          class: "back"
+        },
+        {
+          tipo: "Logs",
+          descripcion:
+            "Para que puedas conocer que pasa con Adminfo, se almacenan todas las transacciones que ocurren en la plataforma.",
+          icon: "fa-archive",
+          class: "color-yellow"
+        },
+        {
+          tipo: "Archivos",
+          descripcion:
+            "Tus archivos de transferencia se respaldan para que puedas acceder a ellos en un futuro.",
+          icon: "far fa-file-alt",
+          class: "#4caf50"
+        },
+        {
+          tipo: "Backups",
+          descripcion:
+            "Toda tu plataforma esta respalda y custodiada con los mas estrictos protocolos y almacenada por 3 meses.",
+          icon: "fa-hdd",
+          class: "color-blue"
+        }
+      ],
+      icons: {
+        Archivos: "far fa-file-alt",
+        Backup: "fa-hdd",
+        Bd: "fas fa-database",
+        Logs: "fas fa-archive"
+      },
       chartOptions: {
         chart: {
           type: "pie",
+          events: {
+            load() {
+              setTimeout(this.reflow.bind(this));
+            }
+          },
           options3d: {
             enabled: false,
             alpha: 45
@@ -140,6 +208,9 @@ export default {
     this.cliente = this.empresa;
     if (Object.keys(this.clientes).length == 0) await this.getClients();
     if (this.cliente) this.reloadStats();
+    setTimeout(() => {
+      this.forceRerenderFitPage();
+    }, 100);
   },
 
   methods: {
@@ -165,19 +236,26 @@ export default {
     async getDiskSpaceStatsByClient(idClientes = {}) {
       let { data } = await clientService.getDiskSpaceStatsByClient(idClientes);
       let sumConsumoTotal = 0;
-      this.tipos = data.map(item => {
+      this.tipos = data.map((item, index) => {
         let tamano = Math.round(parseInt(item.tamano) / 1024 / 1024 / 1024);
+        let tipo = item.tipo.charAt(0).toUpperCase() + item.tipo.substring(1);
+        let icon = this.icons[tipo];
+        tipo = tipo == "Bd" ? "Bases de datos" : tipo;
         sumConsumoTotal += tamano;
         return {
-          tipo: item.tipo,
-          tamano
+          tipo,
+          tamano,
+          icon
         };
       });
       this.consumoTotal = Math.round(sumConsumoTotal);
       this.disponible = Math.round(this.capacidadTotal - this.consumoTotal);
-      this.tipos.push({ tipo: "disponible", tamano: this.disponible });
+      this.tipos.push({
+        tipo: "Disponible",
+        tamano: this.disponible,
+        icon: "mdi-grid-large"
+      });
       let result = [];
-      //result.push(["disponible", this.disponible]);
       for (let i in this.tipos)
         result.push([this.tipos[i]["tipo"], this.tipos[i]["tamano"]]);
       this.chartOptions.series[0].data = result;
@@ -215,6 +293,9 @@ export default {
           );
           return accumulator + tamano;
         }, 0);
+    },
+    forceRerenderFitPage() {
+      this.renderFitPage += 1;
     }
   }
 };
@@ -227,4 +308,28 @@ export default {
 .v-application .headline
   font-size: 18px !important
   padding-bottom: 0
+ul
+  list-style-type: none
+.footer-icon
+  top: 20%
+  left: 20%
+p
+  text-align: justify
+  font-weight: 400 !important
+display-1
+  font-size: 14px
+.color-blue
+  -webkit-background-clip: text !important
+  -webkit-text-fill-color: transparent
+  background-color: #4095af !important
+  border-color: #4095af !important
+.color-yellow
+  -webkit-background-clip: text !important
+  -webkit-text-fill-color: transparent
+  background-color: #f9d432 !important
+  border-color: #f9d432 !important
+.back
+  -webkit-background-clip: text !important
+  -webkit-text-fill-color: transparent
+  background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat
 </style>
