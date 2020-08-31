@@ -130,14 +130,8 @@ export default {
   data: () => ({
     color: "#E91E63",
     colors: ["#9C27b0", "#00CAE3", "#4095af", "#ff9800", "#E91E63", "#FF5252"],
-    image:
-      "https://www.solati.com.co//wp-content/uploads/2019/05/programa-de-cobranza.jpg",
-    images: [
-      "https://www.solati.com.co//wp-content/uploads/2019/05/programa-de-cobranza.jpg",
-      "https://www.solati.com.co//wp-content/uploads/2019/05/programa-de-cobranza.jpg",
-      "https://www.solati.com.co//wp-content/uploads/2019/05/programa-de-cobranza.jpg",
-      "https://www.solati.com.co//wp-content/uploads/2019/05/programa-de-cobranza.jpg"
-    ],
+    image: "https://",
+    images: ["https://"],
     menu: false,
     saveImage: "",
     showImg: true

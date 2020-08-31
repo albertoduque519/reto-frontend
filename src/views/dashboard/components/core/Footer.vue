@@ -31,7 +31,7 @@ export default {
     links: [
       {
         href: "#",
-        text: "Solati"
+        text: "Monitoreo"
       }
     ]
   })

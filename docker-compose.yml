@@ -5,11 +5,11 @@ services:
     container_name: vue-monitor
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     volumes:
       - ".:/app"
       - "/app/node_modules"
     ports:
       - "8080:8080"
     env_file:
-      - .env.dev
+      - .env

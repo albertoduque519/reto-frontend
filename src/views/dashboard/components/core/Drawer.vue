@@ -21,7 +21,10 @@
     <v-list dense nav>
       <v-list-item>
         <div class="align-self-center" color="white" contain>
-          <v-img src="../../../../assets/adminfo_solati.png" max-height="300" />
+          <v-img
+            src="https://ai-i1.infcdn.net/icons_siandroid/png/200/3637/3637359.png"
+            max-height="300"
+          />
         </div>
       </v-list-item>
     </v-list>
@@ -103,13 +106,11 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.authentication.user.userInfo.empresa == "solati") {
-      this.items.push({
-        icon: "mdi-account",
-        title: "user",
-        to: "/pages/user-profile"
-      });
-    }
+    this.items.push({
+      icon: "mdi-account",
+      title: "user",
+      to: "/pages/user-profile"
+    });
   },
   methods: {
     mapItem(item) {

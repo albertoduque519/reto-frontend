@@ -15,5 +15,5 @@ COPY --from=build-stage /app/dist /var/www/html
 RUN chown -R nginx:nginx /var/www/html
 RUN chmod 777 -R /var/www/html/
 # Abrir el puerto 80 del contenedor
-EXPOSE 80
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
